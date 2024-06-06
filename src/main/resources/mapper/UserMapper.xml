@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kris.acg.mapper.UserMapper">
+    <sql id="selectBasicInfo">
+        id,username,photo_url,topic_count,star_count
+    </sql>
+    <sql id="selectPrivacyInfo">
+        user_id,pwd,salt,email,register_time
+    </sql>
+    <sql id="insertBasicInfo">
+        id,username,photo_url,topic_count,star_count
+    </sql>
+    <sql id="insertPrivacyInfo">
+        user_id,pwd,salt,email,register_time
+    </sql>
+    <insert id="insertUserBasicInfo">
+        insert into tb_cmty_user (<include refid="insertBasicInfo"/>)
+        values (#{id},#{username},#{photoUrl},#{topicCount},#{starCount})
+    </insert>
+    <insert id="insertUserPrivacyInfo">
+        insert into tb_user_privacy (<include refid="insertPrivacyInfo"/>)
+        values (#{userId},#{pwd},#{salt},#{email},#{registerTime})
+    </insert>
+    <update id="updateUserBasicInfo">
+        update tb_cmty_user set username = #{username},photo_url = #{photoUrl},topic_count = #{topicCount},star_count = #{starCount}
+        where id = #{id}
+    </update>
+    <update id="updateUserPrivacyInfo">
+        update tb_user_privacy set pwd = #{pwd},email = #{email},register_time = #{registerTime}
+        where user_id = #{userId}
+    </update>
+    <update id="updateStar">
+        update tb_cmty_user set star_count = star_count + #{increment} where id = #{userId}
+    </update>
+    <update id="updateTopic">
+        update tb_cmty_user set topic_count = topic_count + #{increment} where id = #{userId}
+    </update>
+    <delete id="deleteUserBasicInfoById">
+        delete from tb_cmty_user where id = #{id}
+    </delete>
+    <delete id="deleteUserPrivacyInfoById">
+        delete from tb_user_privacy where user_id = #{id}
+    </delete>
+    <select id="selectUserBasicInfoById" resultType="com.kris.acg.entity.user.UserBasic">
+        select <include refid="insertBasicInfo"/>
+        from tb_cmty_user where id = #{id}
+    </select>
+    <select id="selectUserPrivacyInfoById" resultType="com.kris.acg.entity.user.UserPrivacy">
+        select <include refid="insertPrivacyInfo"/>
+        from tb_user_privacy where user_id = #{id}
+    </select>
+    <select id="selectUserByUsername" resultType="com.kris.acg.entity.user.UserBasic">
+        select <include refid="insertBasicInfo"/>
+        from tb_cmty_user where username = #{username}
+    </select>
+    <select id="selectUserByEmail" resultType="com.kris.acg.entity.user.UserPrivacy">
+        select <include refid="insertPrivacyInfo"/>
+        from tb_user_privacy where email = #{email}
+    </select>
+    <select id="selectTopicBySortBy" resultType="com.kris.acg.entity.user.UserBasic">
+        select <include refid="insertBasicInfo"/>
+        from tb_cmty_user order by #{column}
+    </select>
+    <select id="selectAllUserBasicMsg" resultType="com.kris.acg.entity.user.UserBasic">
+        select <include refid="insertBasicInfo"/>
+        from tb_cmty_user
+    </select>
+
+
+</mapper>

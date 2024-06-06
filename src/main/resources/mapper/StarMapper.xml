@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kris.acg.mapper.StarMapper">
+    <sql id="selectField">
+        user_id,topic_id,create_time
+    </sql>
+    <sql id="insertField">
+        user_id,topic_id,create_time
+    </sql>
+    <insert id="insertStar">
+        insert into tb_star (<include refid="insertField"/>)
+        values (#{userId},#{topicId},#{createTime})
+    </insert>
+    <delete id="deleteTopicStar">
+        delete from tb_star where topic_id = #{topicId}
+    </delete>
+    <delete id="deleteUserStar">
+        delete from tb_star where topic_id = #{topicId} and user_id = #{userId}
+    </delete>
+    <select id="selectUserIsStar" resultType="com.kris.acg.entity.community.Star">
+        select <include refid="selectField"/>
+        from tb_star where user_id = #{userId} and topic_id = #{topicId}
+    </select>
+    <select id="selectTopicStar" resultType="com.kris.acg.entity.community.Star">
+        select <include refid="selectField"/>
+        from tb_star where topic_id = #{topicId}
+    </select>
+    <select id="selectUserStar" resultType="com.kris.acg.entity.community.Star">
+        select <include refid="selectField"/>
+        from tb_star where user_id = #{userId}
+    </select>
+
+
+</mapper>

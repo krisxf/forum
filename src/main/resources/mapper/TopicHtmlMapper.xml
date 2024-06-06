@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kris.acg.mapper.TopicHtmlMapper">
+
+    <sql id="selectField">
+        topic_id,html,create_time,update_time,deleted
+    </sql>
+    <sql id="insertField">
+        topic_id,html,create_time,update_time,deleted
+    </sql>
+    <insert id="insertTopicHtml">
+        insert into tb_topic_html (<include refid="insertField"/>)
+        values (#{topicId},#{html},#{createTime},#{updateTime},#{deleted})
+    </insert>
+    <update id="updateTopicHtml">
+        update tb_topic_html set html = #{html},create_time = #{createTime},update_time = #{updateTime},deleted = #{deleted}
+        where topic_id = #{topicId}
+    </update>
+    <delete id="deleteTopicHtml">
+        delete from tb_topic_html where topic_id = #{topic_id}
+    </delete>
+
+    <select id="selectTopicHtmlByTopicId" resultType="com.kris.acg.entity.community.TopicHtml">
+        select <include refid="selectField"/>
+        from tb_topic_html where topic_id = #{topicId}
+    </select>
+
+</mapper>

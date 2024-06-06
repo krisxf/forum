@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kris.acg.mapper.CommentMsgMapper">
+
+    <sql id="selectField">
+        id,comment_id,content,from_user_id,to_user_id,topic_id,topic_title,create_time
+    </sql>
+    <sql id="insertField">
+        comment_id,content,from_user_id,to_user_id,topic_id,topic_title,create_time
+    </sql>
+    <insert id="insertCommentMsg">
+        insert into tb_comment_msg (<include refid="insertField"/>)
+        values (#{commentId},#{content},#{fromUserId},#{toUserId},#{topicId},#{topicTitle},#{createTime})
+    </insert>
+
+    <select id="selectUserCommentMsg" resultType="com.kris.acg.entity.community.CommentMsg">
+        select <include refid="selectField"/>
+        from tb_comment_msg
+        where to_user_id = #{userId}
+    </select>
+</mapper>

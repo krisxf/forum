@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kris.acg.mapper.TagMapper">
+
+    <sql id="selectField">
+        id,label,create_time,update_time,deleted
+    </sql>
+    <sql id="insertField">
+        label,create_time,update_time,deleted
+    </sql>
+
+    <insert id="insertTag">
+        insert into tb_tag (<include refid="insertField"/>)
+        values (#{label},#{createTime},#{updateTime},#{deleted})
+    </insert>
+    <update id="updateTag">
+        update tb_tag set label = #{label},create_time = #{createTime},update_time = #{updateTime},deleted = #{deleted}
+        where id = #{id}
+    </update>
+    <delete id="deleteTagById">
+        delete from tb_tag where id = #{tagId}
+    </delete>
+    <select id="selectAllTag" resultType="com.kris.acg.entity.community.Tag">
+        select <include refid="selectField"/>
+        from tb_tag
+    </select>
+    <select id="selectCountTag" resultType="java.lang.Integer">
+        select count(*) from tb_tag
+    </select>
+    <select id="selectTagById" resultType="com.kris.acg.entity.community.Tag">
+        select <include refid="selectField"></include> from tb_tag where id = #{id}
+    </select>
+</mapper>

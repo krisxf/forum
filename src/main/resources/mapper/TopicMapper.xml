@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kris.acg.mapper.TopicMapper">
+
+    <sql id="selectField">
+        id,user_id,title,content,cover_image_url,star_count,comment_count,
+        page_view,activity_time,create_time,update_time,deleted,category_id
+    </sql>
+    <sql id="insertField">
+        id,user_id,title,content,cover_image_url,star_count,comment_count,
+        page_view,activity_time,create_time,update_time,deleted,category_id
+    </sql>
+
+    <insert id="insertTopic">
+        insert into tb_topic (<include refid="insertField"/>)
+        values (#{id},#{userId},#{title},#{content},#{coverImageUrl},#{starCount},#{commentCount},
+                #{pageView},#{activityTime},#{createTime},#{updateTime},#{deleted},#{categoryId})
+    </insert>
+    <insert id="updateComment">
+        update tb_topic set comment_count = comment_count + #{increment} where id = #{topicId}
+    </insert>
+    <update id="updateTopic">
+        update tb_topic set user_id = #{userId},title = #{title},content = #{content},cover_image_url = #{coverImageUrl},
+                            star_count = #{starCount},comment_count = #{commentCount},page_view = #{pageView},
+                            activity_time = #{activityTime},create_time = #{createTime},update_time = #{updateTime},
+                            deleted = #{deleted},category_id = #{categoryId}
+        where id = #{id}
+    </update>
+    <update id="updateStar">
+        update tb_topic set star_count = star_count + #{increment} where id = #{topicId}
+    </update>
+    <update id="updateActivityTimeInt">
+        update tb_topic set activity_time = #{activityTime} where id = #{topicId}
+    </update>
+    <update id="updateTopicPageView">
+        update tb_topic set page_view = page_view + #{increment} where id = #{topicId}
+    </update>
+    <delete id="deleteTopicById">
+        delete from tb_topic where id = #{topicId}
+    </delete>
+
+    <resultMap id="topicWithUser" type="com.kris.acg.entity.community.Topic">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="activityTime" column="activity_time"/>
+        <result property="pageView" column="page_view"/>
+        <result property="starCount" column="star_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="coverImageUrl" column="cover_image_url"/>
+        <result property="categoryId" column="category_id"/>
+        <association property="user" javaType="com.kris.acg.entity.user.UserBasic" column="user_id"
+                     select="com.kris.acg.mapper.UserMapper.selectUserBasicInfoById"/>
+    </resultMap>
+
+    <resultMap id="topicWithUserTagIds" type="com.kris.acg.entity.community.Topic">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="pageView" column="page_view"/>
+        <result property="starCount" column="star_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="activityTime" column="activity_time"/>
+        <result property="coverImageUrl" column="cover_image_url"/>
+        <result property="categoryId" column="category_id"/>
+        <association property="user" javaType="com.kris.acg.entity.user.UserBasic" column="user_id"
+                     select="com.kris.acg.mapper.UserMapper.selectUserBasicInfoById"/>
+        <collection property="tagIds" ofType="Integer" column="id"
+                    select="com.kris.acg.mapper.TagTopicMapper.selectTagIds"/>
+    </resultMap>
+
+
+
+    <select id="selectUserTopic" resultMap="topicWithUser">
+        select <include refid="selectField"/>
+        from tb_topic where user_id = #{userId} and deleted = 0 order by create_time desc
+    </select>
+    <select id="selectTopicById" resultMap="topicWithUser">
+        select <include refid="selectField"/>
+        from tb_topic where id = #{id} and deleted = 0
+    </select>
+    <select id="selectCountUserTopic" resultType="java.lang.Integer">
+        select count(*) from tb_topic where user_id = #{userId}
+    </select>
+    <select id="selectTopicByCategoryId" resultMap="topicWithUser">
+        select <include refid="selectField"/>
+        from tb_topic where category_id = #{categoryId} and deleted = 0 order by create_time desc
+    </select>
+    <select id="selectAll" resultMap="topicWithUser">
+        select <include refid="selectField"/>
+        from tb_topic where deleted = 0 order by create_time desc
+    </select>
+    <select id="selectTopicBySortBy" resultMap="topicWithUser">
+        select <include refid="selectField"/>
+        from tb_topic where deleted = 0 order by #{column} desc
+    </select>
+    <select id="selectTopicsByTagIds" resultMap="topicWithUser">
+        select <include refid="selectField"/> from tb_topic
+        where deleted = 0 and id in
+        <foreach collection="ids" item="id" index="index" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="selectTopicByReq" resultMap="topicWithUser">
+        select <include refid="selectField"/> from tb_topic
+        where deleted = 0
+        <if test="topicSearchReq.categoryId != null">
+            and category_id = #{topicSearchReq.categoryId}
+        </if>
+        <if test="topicSearchReq.search != null">
+            and (content like concat('%',#{topicSearchReq.search},'%')
+            or title like concat('%',#{topicSearchReq.search},'%'))
+        </if>
+        <if test="topicSearchReq.sortMode != null">
+            order by #{topicSearchReq.sortMode}
+        </if>
+    </select>
+</mapper>

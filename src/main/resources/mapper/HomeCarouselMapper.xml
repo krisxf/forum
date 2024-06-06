@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kris.acg.mapper.HomeCarouselMapper">
+
+    <sql id="selectField">
+        id,description,url,link,size,location,create_time,update_time
+    </sql>
+    <sql id="insertField">
+        id,description,url,link,size,location,create_time,update_time
+    </sql>
+    <insert id="insert">
+        insert into tb_home_carousel (<include refid="insertField"/>)
+        values (#{id},#{description},#{url},#{link},#{size},#{location},#{createTime},#{updateTime})
+    </insert>
+    <update id="update">
+        update tb_home_carousel set description = #{description},url = #{url},
+                                    link = #{link},size = #{size},location = #{location},
+                                    create_time = #{createTime},update_time = #{updateTime}
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete  from tb_home_carousel where id = #{id}
+    </delete>
+
+    <select id="selectAll" resultType="com.kris.acg.entity.community.HomeCarousel">
+        select <include refid="selectField"/>
+        from tb_home_carousel
+    </select>
+    <select id="selectCurrent" resultType="com.kris.acg.entity.community.HomeCarousel">
+        select <include refid="selectField"/>
+        from tb_home_carousel
+        order by location
+    </select>
+    <select id="getMaxLocation" resultType="java.lang.Integer">
+        select coalesce(max(location),0) from tb_home_carousel
+    </select>
+    <select id="selectById" resultType="com.kris.acg.entity.community.HomeCarousel">
+        select <include refid="selectField"/>
+        from tb_home_carousel
+        where id = #{id};
+    </select>
+</mapper>
