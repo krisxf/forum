@@ -8,6 +8,12 @@ package com.kris.acg.common;
  **/
 
 public class Constant {
+
+    /**
+     * 默认游客id
+     */
+    public static final int DEFAULT_ID = 999;
+
     /**
      * 激活码长度
      */

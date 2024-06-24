@@ -1,5 +1,6 @@
 package com.kris.acg.entity.req;
 
+import com.kris.acg.enums.MyHttpMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,10 +17,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ApiAddReq {
 
-    public static final int PATH_MAX = 200;
-    public static final int PATH_MIN = 2;
-    public static final int NOTE_MAX = 100;
-
     String path;
+    MyHttpMethod method;
+    Integer permissionId;
+
+    String note;
+    boolean enable;
 
 }
